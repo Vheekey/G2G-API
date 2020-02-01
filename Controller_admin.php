@@ -47,7 +47,7 @@ class Controller_admin extends Controller
         //return "Hello";
         //$userId = Auth::user()->id;
         $validator = \Validator::make($request->all(),[
-                // 'upJpg' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                //'upJpg' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'sdate' => 'required|date',
                 'edate' => 'required|date',
                 '_token' => 'required'
@@ -61,14 +61,39 @@ class Controller_admin extends Controller
                 return response()->json(['status'=>'Failed', 'message'=>$validator], 201);
             }
                 
-
+            
             $upJpg = $request->input('upJpg');
+            // $upJpg->move(public_path("images"), $new_name);
             $sdate = $request->input('sdate');
             $edate = $request->input('edate');
 
             \DB::insert('insert into programme (info, sdate, edate ) values (?, ?, ?)', [$upJpg, $sdate, $edate]);
              
             return response()->json(['status'=>'OK', 'message'=>'Inserted Successfully'], 200);    
+        
+    }
+
+    public function getImage(Request $request){
+        //return "Hello";
+        //$userId = Auth::user()->id;
+        $validator = \Validator::make($request->all(),[               
+                '_token' => 'required'
+            ], [                
+                '_token.required' => 'Token required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status'=>'Failed', 'message'=>$validator], 201);
+            }
+                
+            
+            // \DB::select('select * from programme')->limit(1)
+            //                                     ->orderBy('id', 'desc');
+            $programme = \DB::table('programme')->orderBy('id', 'desc')
+                                            ->limit(1)
+                                            ->get();
+             
+            return response()->json(['status'=>'OK', 'message'=>$programme], 200);    
         
     }
 
