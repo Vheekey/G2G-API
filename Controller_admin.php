@@ -97,5 +97,28 @@ class Controller_admin extends Controller
         
     }
 
+    public function getVideo(Request $request){
+        
+        $validator = \Validator::make($request->all(),[               
+                '_token' => 'required'
+            ], [                
+                '_token.required' => 'Token required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status'=>'Failed', 'message'=>$validator], 201);
+            }
+                
+            
+            // \DB::select('select * from programme')->limit(1)
+            //                                     ->orderBy('id', 'desc');
+            $service = \DB::table('service')->orderBy('id', 'desc')
+                                            ->limit(2)
+                                            ->get();
+             
+            return response()->json(['status'=>'OK', 'message'=>$service], 200);    
+        
+    }
+
    
 }
