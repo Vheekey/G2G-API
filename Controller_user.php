@@ -54,4 +54,95 @@ class Controller_user extends Controller
     
 
     }
+
+    public function getGallery(Request $request){
+        //return "Hello";
+        //$userId = Auth::user()->id;
+        $validator = \Validator::make($request->all(),[               
+                'id' => 'required'
+            ], [                
+                'id.required' => 'Display id required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status'=>'Failed', 'message'=>$validator], 201);
+            }
+
+            $id = $request->input('id'); 
+           
+            $programme = \DB::table('gallery')->where('thumbId', '=', $id)
+                                            ->get();
+             
+            return response()->json(['status'=>'OK', 'message'=>$programme], 200);    
+        
+    }  
+
+    public function getImage(Request $request){
+        //return "Hello";
+        //$userId = Auth::user()->id;
+        $validator = \Validator::make($request->all(),[               
+                '_token' => 'required'
+            ], [                
+                '_token.required' => 'Token required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status'=>'Failed', 'message'=>$validator], 201);
+            }
+                
+            
+            // \DB::select('select * from programme')->limit(1)
+            //                                     ->orderBy('id', 'desc');
+            $programme = \DB::table('programme')->orderBy('id', 'desc')
+                                            ->limit(1)
+                                            ->get();
+             
+            return response()->json(['status'=>'OK', 'message'=>$programme], 200);    
+        
+    }  
+   
+
+    public function getVideo(Request $request){
+        
+        $validator = \Validator::make($request->all(),[               
+                '_token' => 'required'
+            ], [                
+                '_token.required' => 'Token required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status'=>'Failed', 'message'=>$validator], 201);
+            }
+                
+            
+            // \DB::select('select * from programme')->limit(1)
+            //                                     ->orderBy('id', 'desc');
+            $service = \DB::table('service')->orderBy('id', 'desc')
+                                            ->limit(2)
+                                            ->get();
+             
+            return response()->json(['status'=>'OK', 'message'=>$service], 200);    
+        
+    }
+
+    public function getThumbnail(Request $request){
+        
+        $validator = \Validator::make($request->all(),[               
+                '_token' => 'required'
+            ], [                
+                '_token.required' => 'Token required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status'=>'Failed', 'message'=>$validator], 201);
+            }
+                
+            
+            // \DB::select('select * from programme')->limit(1)
+            //                                     ->orderBy('id', 'desc');
+            $service = \DB::table('thumbnail')->get();
+             
+            return response()->json(['status'=>'OK', 'message'=>$service], 200);    
+        
+    }
 }

@@ -73,52 +73,65 @@ class Controller_admin extends Controller
         
     }
 
-    public function getImage(Request $request){
+    public function newThumbnail(Request $request){
         //return "Hello";
+        // return $request;
         //$userId = Auth::user()->id;
-        $validator = \Validator::make($request->all(),[               
-                '_token' => 'required'
-            ], [                
-                '_token.required' => 'Token required',
-            ]);
+        $validator = \Validator::make($request->all(),[
+            //'upJpg' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'desc' => 'required',
+            '_token' => 'required'
+        ], [
+            'upJpg.required' => 'Image is required',
+            'desc.required' => 'Describe with Month and Year',
+        ]);
 
-            if ($validator->fails()) {
-                return response()->json(['status'=>'Failed', 'message'=>$validator], 201);
-            }
+        if ($validator->fails()) {
+            return response()->json(['status'=>'Failed', 'message'=>$validator], 201);
+        }
                 
             
-            // \DB::select('select * from programme')->limit(1)
-            //                                     ->orderBy('id', 'desc');
-            $programme = \DB::table('programme')->orderBy('id', 'desc')
-                                            ->limit(1)
-                                            ->get();
+            $upJpg = $request->input('upJpg');
+            // $upJpg->move(public_path("images"), $new_name);
+            $descMonthYear = $request->input('desc');
+
+            \DB::insert('insert into thumbnail (thumbs, descMonthYear) values (?, ?)', [$upJpg, $descMonthYear]);
+         
              
-            return response()->json(['status'=>'OK', 'message'=>$programme], 200);    
+            return response()->json(['status'=>'OK', 'message'=>'Inserted Successfully'], 200);    
         
     }
 
-    public function getVideo(Request $request){
-        
-        $validator = \Validator::make($request->all(),[               
-                '_token' => 'required'
-            ], [                
-                '_token.required' => 'Token required',
-            ]);
+    public function newGallery(Request $request){
+        $validator = \Validator::make($request->all(),[
+            //'upJpg' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'desc' => 'required',
+            'cat' => 'required',
+            '_token' => 'required'
+        ], [
+            'upImage.required' => 'Image is required',
+            'desc.required' => 'Describe with Month and Year',
+            'cat.required' => 'Category is required',
+        ]);
 
-            if ($validator->fails()) {
-                return response()->json(['status'=>'Failed', 'message'=>$validator], 201);
-            }
+        if ($validator->fails()) {
+            return response()->json(['status'=>'Failed', 'message'=>$validator], 201);
+        }
                 
             
-            // \DB::select('select * from programme')->limit(1)
-            //                                     ->orderBy('id', 'desc');
-            $service = \DB::table('service')->orderBy('id', 'desc')
-                                            ->limit(2)
-                                            ->get();
+            $upImage = $request->input('upImage');
+            $desc = $request->input('desc');
+            // $upJpg->move(public_path("images"), $new_name);
+            $cat = $request->input('cat');
+
+            \DB::insert('insert into gallery (galleryImage, descImage, thumbId) values (?, ?, ?)', [$upImage, $desc, $cat]);
+         
              
-            return response()->json(['status'=>'OK', 'message'=>$service], 200);    
+            return response()->json(['status'=>'OK', 'message'=>'Inserted Successfully'], 200);    
         
     }
+
+    
 
    
 }
